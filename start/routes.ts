@@ -18,6 +18,5 @@ router.get('/', async () => {
 })
 router.group(() => {
   router.post('/login', [AuthController, 'login'])
-  router.post('/register', [AuthController, 'register'])
 }).prefix('/:siteId').use(middleware.site())
 
