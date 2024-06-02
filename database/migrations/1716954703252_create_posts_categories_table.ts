@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.bigInteger('post_id').unsigned().notNullable()
       table.bigInteger('category_id').unsigned().notNullable()
-      table.unique(['post_id', 'category_id'])
+      table.unique(['post_id', 'category_id']).primary(['post_id', 'category_id'])
     })
   }
 
