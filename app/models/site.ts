@@ -21,7 +21,7 @@ export default class Site extends BaseModel {
   @column()
   declare props: Record<string, any> | null
 
-  @column()
+  @column({ serializeAs: null })
   declare key: string
 
   @column.dateTime({ autoCreate: true })
