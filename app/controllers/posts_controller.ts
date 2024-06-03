@@ -6,9 +6,12 @@ export default class PostsController {
    * Display a list of resource
    */
   async index({ params, request }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = 10
-    const posts = await Post.query().where('site_id', params.siteId).paginate(page, limit)
+    const { page, limit, orderBy, sort } = request.qs()
+    const posts = await Post.query()
+      .where('site_id', params.siteId)
+      .andWhere('active', true)
+      .orderBy(orderBy || 'created_at', sort || 'desc')
+      .paginate(page, limit)
     return posts
   }
 

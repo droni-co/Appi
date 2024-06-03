@@ -8,6 +8,7 @@ export default class AuthController {
   async login({ request, ally }: HttpContext) {
     const siteId = request.param('siteId')
     const payload = await authLoginValidator.validate(request.all())
+    
     const allyUser = await ally.use('google').userFromToken(payload.access_token)
     const user = await User.firstOrCreate({
         email: allyUser.email,

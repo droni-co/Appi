@@ -8,10 +8,12 @@
 */
 
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
 import AuthController from '#controllers/auth_controller'
 import SitesController from '#controllers/sites_controller'
-import { middleware } from '#start/kernel'
 import PostsController from '#controllers/posts_controller'
+// Admin controllers
+import AdminPostsController from '#controllers/admin/posts_controller'
 
 router.get('/', async () => {
   return {
@@ -22,5 +24,14 @@ router.group(() => {
   router.get('/', [SitesController, 'show'])
   router.post('/login', [AuthController, 'login'])
   router.resource('posts', PostsController).params({ slug: 'slug'}).only(['index', 'show'])
+
+  // Admin site
+  router.group(() => {
+    router.resource('posts', AdminPostsController).apiOnly()
+  })
+  .prefix('/admin').as('admin')
+  .use(middleware.auth())
+  
 }).prefix('/:siteId').use(middleware.site())
+
 
