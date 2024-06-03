@@ -30,7 +30,7 @@ router.group(() => {
     router.resource('posts', AdminPostsController).apiOnly()
   })
   .prefix('/admin').as('admin')
-  .use(middleware.auth())
+  .use([middleware.auth(), middleware.adminSite()])
   
 }).prefix('/:siteId').use(middleware.site())
 

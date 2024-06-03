@@ -6,10 +6,10 @@ export default class Post extends BaseModel {
   declare id: number
 
   @column()
-  declare siteId: number
+  declare siteId: string
 
   @column()
-  declare userId: number
+  declare userId: string
 
   @column()
   declare name: string
