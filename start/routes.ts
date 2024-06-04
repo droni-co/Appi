@@ -15,11 +15,7 @@ import PostsController from '#controllers/posts_controller'
 // Admin controllers
 import AdminPostsController from '#controllers/admin/posts_controller'
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
-})
+router.get('/', [SitesController, 'index'])
 router.group(() => {
   router.get('/', [SitesController, 'show'])
   router.post('/login', [AuthController, 'login'])
