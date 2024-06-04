@@ -24,6 +24,10 @@ router.group(() => {
   router.get('/', [SitesController, 'show'])
   router.post('/login', [AuthController, 'login'])
   router.resource('posts', PostsController).params({ slug: 'slug'}).only(['index', 'show'])
+  // User area
+  router.group(() => {
+    router.get('/me', [AuthController, 'me'])
+  }).use(middleware.auth())
 
   // Admin site
   router.group(() => {

@@ -44,4 +44,11 @@ export default class AuthController {
     
     return {user, token, enrollment}
   }
+  async me({ auth }: HttpContext) {
+    const enrollments = await Enrollment.query().where('user_id', auth.user!.id).preload('site')
+    return { 
+      user: auth.user,
+      enrollments
+    }
+  }
 }
