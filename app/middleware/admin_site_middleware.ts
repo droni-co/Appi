@@ -15,7 +15,7 @@ export default class AdminSiteMiddleware {
       .andWhere('user_id', user!.id)
       .andWhere('role', 'admin')
       .first()
-    if (!enrollment) return ctx.response.status(404).json({ message: 'Access denied'})
+    if (!enrollment) return ctx.response.status(401).json({ message: 'Access denied'})
 
     /**
      * Call next method in the pipeline and return its output
