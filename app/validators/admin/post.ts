@@ -13,7 +13,7 @@ export const adminPostValidator = vine.compile(
         .select('id')
         .where('slug', slug)
         .andWhere('site_id', data.data.siteId)
-        .andWhereNot('id', data.data.postId)
+        .andWhereNot('id', data.data.postId ?? 0)
         .first()
       return !post
     }),
