@@ -8,8 +8,7 @@ export default class SiteMiddleware {
      * Middleware logic goes here (before the next call)
      */
     const { siteId } = ctx.params
-    const { key } = ctx.request.headers()
-    const site = await Site.query().where('id', siteId).where('key', key ?? '').first()
+    const site = await Site.query().where('id', siteId).first()
     if (!site) return ctx.response.status(404).json({ message: 'Site not found'})
 
     /**

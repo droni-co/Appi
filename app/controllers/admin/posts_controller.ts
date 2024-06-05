@@ -14,7 +14,11 @@ export default class PostsController {
       .where('site_id', siteId)
       .orderBy(orderBy || 'updated_at', sort || 'desc')
       .paginate(page, limit)
-    return posts
+    return posts.serialize({
+      fields: {
+        omit: ['content']
+      }
+    })
   }
 
   /**

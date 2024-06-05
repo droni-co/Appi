@@ -5,8 +5,8 @@ import { authLoginValidator } from '#validators/auth'
 import string from '@adonisjs/core/helpers/string'
 
 export default class AuthController {
-  async login({ request, ally }: HttpContext) {
-    const siteId = request.param('siteId')
+  async login({ request, ally, params }: HttpContext) {
+    const siteId = params.siteId
     const payload = await authLoginValidator.validate(request.all())
     
     const allyUser = await ally.use('google').userFromToken(payload.access_token)
@@ -45,7 +45,11 @@ export default class AuthController {
     return {user, token, enrollment}
   }
   async me({ auth }: HttpContext) {
-    const enrollments = await Enrollment.query().where('user_id', auth.user!.id).preload('site')
+    const enrollments = await Enrollment.query()
+      .where('user_id', auth.user!.id)
+      .orderBy('role', 'asc')
+      .orderBy('created_at', 'desc')
+      .preload('site')
     return { 
       user: auth.user,
       enrollments

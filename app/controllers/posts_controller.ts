@@ -12,7 +12,11 @@ export default class PostsController {
       .andWhere('active', true)
       .orderBy(orderBy || 'created_at', sort || 'desc')
       .paginate(page, limit)
-    return posts
+    return posts.serialize({
+      fields: {
+        omit: ['content']
+      }
+    })
   }
 
   /**
