@@ -14,9 +14,11 @@ import SitesController from '#controllers/sites_controller'
 import PostsController from '#controllers/posts_controller'
 // Admin controllers
 import DrodminPostsController from '#controllers/drodmin/posts_controller'
+import DrodminSitesController from '#controllers/drodmin/sites_controller'
 
 // Drodmin routes
 router.group(() => {
+  router.get('/', [DrodminSitesController, 'show']).as('site')
   router.resource('posts', DrodminPostsController).apiOnly()
 })
 .prefix('/drodmin/:siteId').as('drodmin')
