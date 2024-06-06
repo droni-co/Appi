@@ -13,25 +13,25 @@ import AuthController from '#controllers/auth_controller'
 import SitesController from '#controllers/sites_controller'
 import PostsController from '#controllers/posts_controller'
 // Admin controllers
-import AdminPostsController from '#controllers/admin/posts_controller'
+import DrodminPostsController from '#controllers/drodmin/posts_controller'
+
+// Drodmin routes
+router.group(() => {
+  router.resource('posts', DrodminPostsController).apiOnly()
+})
+.prefix('/drodmin/:siteId').as('drodmin')
+.use([middleware.auth(), middleware.adminSite()])
 
 router.get('/', [SitesController, 'index'])
 router.group(() => {
   router.get('/', [SitesController, 'show'])
   router.post('/login', [AuthController, 'login'])
-  router.resource('posts', PostsController).params({ slug: 'slug'}).only(['index', 'show'])
+  router.resource('posts', PostsController).only(['index', 'show'])
   // User area
   router.group(() => {
     router.get('/me', [AuthController, 'me'])
-  }).use(middleware.auth())
-
-  // Admin site
-  router.group(() => {
-    router.resource('posts', AdminPostsController).apiOnly()
-  })
-  .prefix('/admin').as('admin')
-  .use([middleware.auth(), middleware.adminSite()])
-  
+  }).use(middleware.auth())  
 }).prefix('/:siteId').use(middleware.site())
+
 
 
