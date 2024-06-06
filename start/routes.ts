@@ -19,6 +19,7 @@ import DrodminSitesController from '#controllers/drodmin/sites_controller'
 // Drodmin routes
 router.group(() => {
   router.get('/', [DrodminSitesController, 'show']).as('site')
+  router.get('/me', [AuthController, 'me']).as('me')
   router.resource('posts', DrodminPostsController).apiOnly()
 })
 .prefix('/drodmin/:siteId').as('drodmin')
@@ -26,13 +27,14 @@ router.group(() => {
 
 router.get('/', [SitesController, 'index'])
 router.group(() => {
+  router.get('/me', [AuthController, 'me'])
+}).use(middleware.auth())
+router.group(() => {
   router.get('/', [SitesController, 'show'])
   router.post('/login', [AuthController, 'login'])
   router.resource('posts', PostsController).only(['index', 'show'])
   // User area
-  router.group(() => {
-    router.get('/me', [AuthController, 'me'])
-  }).use(middleware.auth())  
+  
 }).prefix('/:siteId').use(middleware.site())
 
 
