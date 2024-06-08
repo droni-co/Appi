@@ -29,7 +29,7 @@ export default class Post extends BaseModel {
   @column()
   declare format: string
 
-  @column()
+  @column({ serialize: Boolean })
   declare active: boolean
 
   @column()
