@@ -8,7 +8,7 @@ export const adminAttachmentValidator = vine.compile(
     name: vine.string().trim(),
     file: vine.file({
       size: '1mb',
-      extnames: ['jpg', 'png', 'pdf', 'xlsx', 'webp']
+      extnames: ['jpg', 'jpeg', 'png', 'pdf', 'xlsx', 'webp', 'txt', 'csv', 'json']
     })
   })
 )

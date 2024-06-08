@@ -1,6 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Attachment from '#models/attachment'
 import { adminAttachmentValidator } from '#validators/admin/attachments'
+import aws from 'aws-sdk'
+import fs from 'node:fs'
+import string from '@adonisjs/core/helpers/string'
+
 
 export default class AttachmentsController {
   /**
@@ -8,10 +12,10 @@ export default class AttachmentsController {
    */
   async index({ request, params }: HttpContext) {
     const siteId = params.siteId
-    const { page, limit, orderBy, sort } = request.qs()
+    const { page=1, limit=20, orderBy='created_at', sort='desc' } = request.qs()
     const attachments = await Attachment.query()
       .where('site_id', siteId)
-      .orderBy(orderBy || 'created_at', sort || 'desc')
+      .orderBy(orderBy, sort)
       .paginate(page, limit)
 
     return attachments
@@ -24,11 +28,32 @@ export default class AttachmentsController {
     const siteId = params.siteId
     const user = await auth.authenticate()
     const payload = await adminAttachmentValidator.validate({...request.all(), file: request.file('file')})
+    const path = `${siteId}/${user.id}/${payload.file.size}-${string.slug(payload.file.clientName)}.${payload.file.extname}`
+
+    /* file upload */
+    aws.config.update({
+      region: 'nyc3',
+      accessKeyId: process.env.DO_SPACES_KEY,
+      secretAccessKey: process.env.DO_SPACES_SECRET
+    });
+    const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
+    const s3 = new aws.S3({
+      endpoint: spacesEndpoint
+    });
+    s3.upload({
+      Bucket: 'dronico',
+      Key: path,
+      Body: payload.file.tmpPath ? fs.readFileSync(payload.file.tmpPath) : undefined,
+      ContentType: payload.file.type,
+      ACL: 'public-read'
+    }, (err, data) => {
+      console.log(err, data);
+    });
     const attachment = await Attachment.create({
       siteId,
       userId: user.id,
       name: payload.name,
-      path: 'uploads/' + payload.file.clientName,
+      path: path,
       size: payload.file.size,
       mime: payload.file.type,
     })
@@ -38,5 +63,31 @@ export default class AttachmentsController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ params }: HttpContext) {
+    const siteId = params.siteId
+    const attachment = await Attachment.query()
+    .where('site_id', siteId)
+    .andWhere('id', params.id)
+    .firstOrFail()
+
+    /* file delete */
+    aws.config.update({
+      region: 'nyc3',
+      accessKeyId: process.env.DO_SPACES_KEY,
+      secretAccessKey: process.env.DO_SPACES_SECRET
+    });
+    const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
+    const s3 = new aws.S3({
+      endpoint: spacesEndpoint
+    });
+    s3.deleteObject({
+      Bucket: 'dronico',
+      Key: attachment.path
+    }, (err, data) => {
+      console.log(err, data);
+    });
+   
+    await attachment.delete()
+    return attachment
+  }
 }
