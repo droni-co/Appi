@@ -9,10 +9,21 @@ export default class PostsController {
    */
   async index({ request, params }: HttpContext) {
     const siteId = params.siteId
-    const { page, limit, orderBy, sort } = request.qs()
+    const {
+      page=1,
+      limit=20,
+      orderBy='created_at',
+      sort='desc',
+      q = 'null'
+    } = request.qs()
     const posts = await Post.query()
       .where('site_id', siteId)
-      .orderBy(orderBy || 'updated_at', sort || 'desc')
+      .andWhere(function (query) {
+        if (q !== 'null') {
+          query.andWhere('name', 'LIKE', `%${q}%`)
+        }
+      })
+      .orderBy(orderBy, sort)
       .preload('user')
       .paginate(page, limit)
     return posts.serialize({

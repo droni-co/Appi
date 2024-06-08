@@ -12,9 +12,20 @@ export default class AttachmentsController {
    */
   async index({ request, params }: HttpContext) {
     const siteId = params.siteId
-    const { page=1, limit=20, orderBy='created_at', sort='desc' } = request.qs()
+    const {
+      page=1,
+      limit=20,
+      orderBy='created_at',
+      sort='desc',
+      q = 'null'
+    } = request.qs()
     const attachments = await Attachment.query()
       .where('site_id', siteId)
+      .andWhere(function (query) {
+        if (q !== 'null') {
+          query.andWhere('name', 'LIKE', `%${q}%`)
+        }
+      })
       .orderBy(orderBy, sort)
       .paginate(page, limit)
 
