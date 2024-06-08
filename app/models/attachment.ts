@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, computed } from '@adonisjs/lucid/orm'
 
 export default class Attachment extends BaseModel {
   @column({ isPrimary: true })
@@ -22,6 +22,11 @@ export default class Attachment extends BaseModel {
 
   @column()
   declare mime: string
+
+  @computed()
+  get url() {
+    return `https://${process.env.DO_SPACES_BUCKET}.${process.env.DO_SPACES_DOMAIN}/${this.path}`
+  }
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

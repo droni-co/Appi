@@ -47,7 +47,7 @@ export default class AttachmentsController {
       accessKeyId: process.env.DO_SPACES_KEY,
       secretAccessKey: process.env.DO_SPACES_SECRET
     });
-    const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
+    const spacesEndpoint = new aws.Endpoint(String(process.env.DO_SPACES_DOMAIN));
     const s3 = new aws.S3({
       endpoint: spacesEndpoint
     });
