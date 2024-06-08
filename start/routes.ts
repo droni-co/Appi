@@ -13,13 +13,16 @@ import AuthController from '#controllers/auth_controller'
 import SitesController from '#controllers/sites_controller'
 import PostsController from '#controllers/posts_controller'
 // Admin controllers
-import DrodminPostsController from '#controllers/drodmin/posts_controller'
 import DrodminSitesController from '#controllers/drodmin/sites_controller'
+import DrodminAttachmentsController from '#controllers/drodmin/attachments_controller'
+import DrodminPostsController from '#controllers/drodmin/posts_controller'
+
 
 // Drodmin routes
 router.group(() => {
   router.get('/', [DrodminSitesController, 'show']).as('site')
   router.get('/me', [AuthController, 'me']).as('me')
+  router.resource('attachments', DrodminAttachmentsController).only(['index', 'store', 'destroy'])
   router.resource('posts', DrodminPostsController).apiOnly()
 })
 .prefix('/drodmin/:siteId').as('drodmin')
