@@ -11,6 +11,7 @@ export default class PostsController {
       .where('site_id', params.siteId)
       .andWhere('active', true)
       .orderBy(orderBy || 'created_at', sort || 'desc')
+      .preload('user')
       .paginate(page, limit)
     return posts.serialize({
       fields: {
@@ -28,6 +29,7 @@ export default class PostsController {
       .where('site_id', params.siteId)
       .andWhere('slug', slug)
       .andWhere('active', true)
+      .preload('user')
       .firstOrFail()
     return post
   }

@@ -38,7 +38,10 @@ export default class PostsController {
    */
   async show({ params }: HttpContext) {
     const siteId = params.siteId
-    const post = await Post.query().where('site_id', siteId).where('id', params.id).firstOrFail()
+    const post = await Post.query()
+      .where('site_id', siteId)
+      .andWhere('id', params.id)
+      .preload('user').firstOrFail()
     return post
   }
 
@@ -47,7 +50,10 @@ export default class PostsController {
    */
   async update({ params, request }: HttpContext) {
     const siteId = params.siteId
-    const post = await Post.query().where('site_id', siteId).where('id', params.id).firstOrFail()
+    const post = await Post.query()
+      .where('site_id', siteId)
+      .andWhere('id', params.id)
+      .firstOrFail()
     const payload = await adminPostValidator.validate({...request.all(), siteId, userId: post.userId, postId: post.id})
     post.merge(payload)
     await post.save()
