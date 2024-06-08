@@ -13,6 +13,7 @@ export default class PostsController {
     const posts = await Post.query()
       .where('site_id', siteId)
       .orderBy(orderBy || 'updated_at', sort || 'desc')
+      .preload('user')
       .paginate(page, limit)
     return posts.serialize({
       fields: {
