@@ -40,7 +40,6 @@ export default class PostsController {
     const siteId = params.siteId
     const user = await auth.authenticate()
     const payload = await adminPostValidator.validate({... request.all(), siteId, userId: user.id})
-    payload.props = JSON.stringify(payload.props ?? [])
     const post = await Post.create(payload)
     return post
   }
@@ -66,7 +65,6 @@ export default class PostsController {
       .andWhere('id', params.id)
       .firstOrFail()
     const payload = await adminPostValidator.validate({...request.all(), siteId: params.siteId, userId: post.userId, postId: post.id})
-    payload.props = JSON.stringify(payload.props)
     post.merge(payload)
     await post.save()
     return post
@@ -90,7 +88,7 @@ export default class PostsController {
     const props = await Post.query().select('props').where('site_id', siteId).andWhereNotNull('props')
     const result = new Set()
     props.forEach(e => {
-      if(!e.props) return
+      if(!e.props || typeof e.props === 'string') return
       e.props.forEach((ei: any) => {
         result.add(ei.name)
       })
