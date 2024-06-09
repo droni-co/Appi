@@ -40,6 +40,7 @@ export default class PostsController {
     const siteId = params.siteId
     const user = await auth.authenticate()
     const payload = await adminPostValidator.validate({... request.all(), siteId, userId: user.id})
+    payload.props = JSON.stringify(payload.props ?? [])
     const post = await Post.create(payload)
     return post
   }
@@ -66,6 +67,7 @@ export default class PostsController {
       .andWhere('id', params.id)
       .firstOrFail()
     const payload = await adminPostValidator.validate({...request.all(), siteId, userId: post.userId, postId: post.id})
+    payload.props = JSON.stringify(payload.props)
     post.merge(payload)
     await post.save()
     return post
@@ -79,5 +81,14 @@ export default class PostsController {
     const post = await Post.query().where('site_id', siteId).where('id', params.id).firstOrFail()
     await post.delete()
     return post
+  }
+
+  /**
+   * Props Lists
+   */
+  async props({ params }: HttpContext) {
+    const siteId = params.siteId
+    const props = await Post.query().select('props').where('site_id', siteId)
+    return props
   }
 }

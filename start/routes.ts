@@ -23,7 +23,9 @@ router.group(() => {
   router.get('/', [DrodminSitesController, 'show']).as('site')
   router.get('/me', [AuthController, 'me']).as('me')
   router.resource('attachments', DrodminAttachmentsController).only(['index', 'store', 'destroy'])
+  router.get('/posts/props', [DrodminPostsController, 'props']).as('posts.props')
   router.resource('posts', DrodminPostsController).apiOnly()
+
 })
 .prefix('/drodmin/:siteId').as('drodmin')
 .use([middleware.auth(), middleware.adminSite()])
