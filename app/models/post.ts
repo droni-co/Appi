@@ -34,7 +34,7 @@ export default class Post extends BaseModel {
   @column({ serialize: Boolean })
   declare active: boolean
 
-  @column()
+  @column({ serialize: (v) => JSON.parse(v) })
   declare props: Record<string, any> | null
 
   @column()
