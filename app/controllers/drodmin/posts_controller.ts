@@ -88,7 +88,7 @@ export default class PostsController {
    */
   async props({ params }: HttpContext) {
     const siteId = params.siteId
-    const props = await Post.query().select('props').where('site_id', siteId)
+    const props = await Post.query().select('props').where('site_id', siteId).andWhereNotNull('props')
     const result = new Set()
     props.forEach(e => {
       if(!e.props) return
