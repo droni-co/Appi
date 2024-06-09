@@ -61,12 +61,11 @@ export default class PostsController {
    * Handle form submission for the edit action
    */
   async update({ params, request }: HttpContext) {
-    const siteId = params.siteId
     const post = await Post.query()
-      .where('site_id', siteId)
+      .where('site_id', params.siteId)
       .andWhere('id', params.id)
       .firstOrFail()
-    const payload = await adminPostValidator.validate({...request.all(), siteId, userId: post.userId, postId: post.id})
+    const payload = await adminPostValidator.validate({...request.all(), siteId: params.siteId, userId: post.userId, postId: post.id})
     payload.props = JSON.stringify(payload.props)
     post.merge(payload)
     await post.save()

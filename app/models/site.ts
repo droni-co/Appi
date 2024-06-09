@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeSave, column } from '@adonisjs/lucid/orm'
 import * as crypto from 'crypto'
 
 export default class Site extends BaseModel {
@@ -19,7 +19,7 @@ export default class Site extends BaseModel {
   declare logo: string | null
 
   @column()
-  declare props: Record<string, any> | null
+  declare props: Record<string, any> | null | string
 
   @column({ serializeAs: null })
   declare key: string
@@ -29,4 +29,12 @@ export default class Site extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @beforeSave()
+  static async jsonProps(site: Site) {
+    if (site.props) {
+      site.props = JSON.stringify(site.props)
+    }
+  }
+
 }

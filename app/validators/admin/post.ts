@@ -22,7 +22,10 @@ export const adminPostValidator = vine.compile(
     content: vine.string().trim().optional(),
     format: vine.string().trim().in(['html', 'markdown']),
     active: vine.boolean(),
-    props: vine.any().optional(),
+    props: vine.array(vine.object({
+      name: vine.string().trim(),
+      value: vine.string().trim(),
+    })),
     lang: vine.string().trim().in(['es', 'en']),
   })
 )

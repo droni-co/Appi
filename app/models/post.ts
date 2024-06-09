@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeSave, belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
 
@@ -35,7 +35,7 @@ export default class Post extends BaseModel {
   declare active: boolean
 
   @column()
-  declare props: Record<string, any> | null
+  declare props: Record<string, any> | null | string
 
   @column()
   declare lang: string
@@ -48,4 +48,11 @@ export default class Post extends BaseModel {
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
+
+  @beforeSave()
+  static async jsonProps(post: Post) {
+    if (post.props) {
+      post.props = JSON.stringify(post.props)
+    }
+  }
 }

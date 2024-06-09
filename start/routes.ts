@@ -21,6 +21,7 @@ import DrodminPostsController from '#controllers/drodmin/posts_controller'
 // Drodmin routes
 router.group(() => {
   router.get('/', [DrodminSitesController, 'show']).as('site')
+  router.put('/', [DrodminSitesController, 'update']).as('site.update')
   router.get('/me', [AuthController, 'me']).as('me')
   router.resource('attachments', DrodminAttachmentsController).only(['index', 'store', 'destroy'])
   router.get('/posts/props', [DrodminPostsController, 'props']).as('posts.props')
