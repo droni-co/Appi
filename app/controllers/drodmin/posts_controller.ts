@@ -14,13 +14,19 @@ export default class PostsController {
       limit=20,
       orderBy='created_at',
       sort='desc',
-      q = 'null'
+      q = 'null',
+      lang = 'all'
     } = request.qs()
     const posts = await Post.query()
       .where('site_id', siteId)
       .andWhere(function (query) {
         if (q !== 'null') {
           query.andWhere('name', 'LIKE', `%${q}%`)
+        }
+      })
+      .andWhere(function (query) {
+        if (lang !== 'all') {
+          query.andWhere('lang', lang)
         }
       })
       .orderBy(orderBy, sort)
