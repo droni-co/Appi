@@ -58,7 +58,9 @@ export default class PostsController {
     const post = await Post.query()
       .where('site_id', siteId)
       .andWhere('id', params.id)
-      .preload('user').firstOrFail()
+      .preload('user')
+      .preload('categories')
+      .firstOrFail()
     return post
   }
 

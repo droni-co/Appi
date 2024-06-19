@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeSave, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, beforeSave, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
+import Category from './category.js'
 
 export default class Post extends BaseModel {
   @column({ isPrimary: true })
@@ -48,6 +49,9 @@ export default class Post extends BaseModel {
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
+
+  @manyToMany(() => Category)
+  declare categories: ManyToMany<typeof Category>
 
   @beforeSave()
   static async jsonProps(post: Post) {
