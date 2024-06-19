@@ -5,8 +5,6 @@ import vine from '@vinejs/vine'
  */
 export const adminPostValidator = vine.compile(
   vine.object({
-    siteId: vine.string().trim(),
-    userId: vine.string().trim(),
     name: vine.string().trim(),
     slug: vine.string().trim().unique(async (db, slug, data) => {
       const post = await db.from('posts')

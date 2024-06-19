@@ -46,7 +46,7 @@ export default class PostsController {
     const siteId = params.siteId
     const user = await auth.authenticate()
     const payload = await adminPostValidator.validate({... request.all(), siteId, userId: user.id})
-    const post = await Post.create(payload)
+    const post = await Post.create({...payload, siteId, userId: user.id})
     return post
   }
 
