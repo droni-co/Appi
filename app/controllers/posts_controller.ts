@@ -31,6 +31,7 @@ export default class PostsController {
       .andWhere('slug', slug)
       .andWhere('active', true)
       .preload('user')
+      .preload('categories')
       .firstOrFail()
     return post
   }

@@ -25,5 +25,8 @@ export const adminPostValidator = vine.compile(
       value: vine.string().trim(),
     })),
     lang: vine.string().trim().in(['es', 'en']),
+    categories: vine.array(vine.object({
+      id: vine.number(),
+    })).optional(),
   })
 )

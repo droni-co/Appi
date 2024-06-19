@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 
 import Post from '#models/post'
+import Category from '#models/category'
 import { adminPostValidator } from '#validators/admin/post'
 
 export default class PostsController {
@@ -72,7 +73,11 @@ export default class PostsController {
       .where('site_id', params.siteId)
       .andWhere('id', params.id)
       .firstOrFail()
-    const payload = await adminPostValidator.validate({...request.all(), siteId: params.siteId, userId: post.userId, postId: post.id})
+    const payload = await adminPostValidator.validate({...request.all(), siteId: params.siteId, postId: post.id})
+
+    if(payload.categories) {
+      this.attachCategories(post, payload.categories)
+    }
     post.merge(payload)
     await post.save()
     return post
@@ -102,5 +107,17 @@ export default class PostsController {
       })
     })
     return Array.from(result)
+  }
+
+  /**
+   * Attach categories to post
+   */
+  async attachCategories(post: Post, categories:{id: number}[]) {
+    const categoryIds = categories.map(e => e.id)
+    const categiesList = await Category.query()
+      .where('site_id', post.siteId)
+      .andWhereIn('id', categoryIds)
+      .andWhere('lang', post.lang)
+    await post.related('categories').sync(categiesList.map(e => e.id))
   }
 }
