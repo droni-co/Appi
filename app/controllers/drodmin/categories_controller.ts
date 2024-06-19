@@ -52,11 +52,17 @@ export default class CategoriesController {
    */
   async update({ params, request }: HttpContext) {
     const siteId = params.siteId
-    const payload = await adminCategoryValidator.validate({ ...request.all(), siteId, categoryId: params.id })
     const category = await Category.query()
       .where('site_id', siteId)
       .andWhere('id', params.id)
       .firstOrFail()
+    
+    const payload = await adminCategoryValidator.validate({
+      ...request.all(),
+      siteId,
+      categoryId: category.id,
+      lang: category.lang
+    })
 
     category.merge(payload)
     await category.save()

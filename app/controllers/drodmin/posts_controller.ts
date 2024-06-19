@@ -73,7 +73,12 @@ export default class PostsController {
       .where('site_id', params.siteId)
       .andWhere('id', params.id)
       .firstOrFail()
-    const payload = await adminPostValidator.validate({...request.all(), siteId: params.siteId, postId: post.id})
+    const payload = await adminPostValidator.validate({
+      ...request.all(),
+      siteId: params.siteId,
+      postId: post.id,
+      lang: post.lang
+    })
 
     if(payload.categories) {
       this.attachCategories(post, payload.categories)
