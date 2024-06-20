@@ -24,6 +24,7 @@ export default class CategoriesController {
       })
       .orderBy('parent_id', 'asc')
       .preload('children')
+      .preload('parent')
 
     return categories
   }
