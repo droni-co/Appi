@@ -8,7 +8,7 @@ export default class CategoriesController {
    */
   async index({ request, params }: HttpContext) {
     const siteId = params.siteId
-    const { lang = 'all' } = request.qs()
+    const { lang = 'all', parentId=null } = request.qs()
 
     const categories = await Category.query()
       .where('site_id', siteId)
@@ -17,7 +17,12 @@ export default class CategoriesController {
           query.andWhere('lang', lang)
         }
       })
-      .andWhere('parent_id', 0)
+      .andWhere(function (query) {
+        if (parentId) {
+          query.andWhere('parent_id', parentId)
+        }
+      })
+      .orderBy('parent_id', 'asc')
       .preload('children')
 
     return categories
