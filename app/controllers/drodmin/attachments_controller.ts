@@ -39,7 +39,7 @@ export default class AttachmentsController {
     const siteId = params.siteId
     const user = await auth.authenticate()
     const payload = await adminAttachmentValidator.validate({...request.all(), file: request.file('file')})
-    const path = `${siteId}/${user.id}/${payload.file.size}-${string.slug(payload.file.clientName)}.${payload.file.extname}`
+    const path = `${siteId}/${user.id}/${payload.file.size}-${string.slug(payload.file.clientName)}`
 
     /* file upload */
     aws.config.update({
