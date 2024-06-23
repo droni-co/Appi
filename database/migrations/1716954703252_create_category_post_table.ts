@@ -5,8 +5,20 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.bigInteger('post_id').unsigned().notNullable()
-      table.bigInteger('category_id').unsigned().notNullable()
+      table.integer('post_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('posts')
+        .onDelete('CASCADE')
+
+      table.integer('category_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('categories')
+        .onDelete('CASCADE')
+        
       table.unique(['post_id', 'category_id']).primary(['post_id', 'category_id'])
     })
   }

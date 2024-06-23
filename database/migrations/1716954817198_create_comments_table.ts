@@ -6,7 +6,8 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.bigInteger('post_id')
+      table.integer('post_id')
+        .unsigned()
         .notNullable()
         .references('id')
         .inTable('posts')
@@ -17,7 +18,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')
-      table.bigInteger('parent_id').defaultTo(0)
+      table.integer('parent_id').unsigned().defaultTo(0).notNullable()
       table.text('content').notNullable()
       table.boolean('approved').defaultTo(false)
       table.timestamp('created_at')
