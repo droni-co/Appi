@@ -12,7 +12,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('sites')
         .onDelete('CASCADE')
-      table.bigInteger('parent_id').nullable()
+      table.bigInteger('parent_id').defaultTo(0)
       table.string('name').notNullable()
       table.string('slug').notNullable()
       table.unique(['site_id', 'slug'])

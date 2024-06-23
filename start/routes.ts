@@ -17,6 +17,7 @@ import DrodminSitesController from '#controllers/drodmin/sites_controller'
 import DrodminAttachmentsController from '#controllers/drodmin/attachments_controller'
 import DrodminPostsController from '#controllers/drodmin/posts_controller'
 import DrodminCategoriesController from '#controllers/drodmin/categories_controller'
+import DrodminPostsCommentsController from '#controllers/drodmin/posts_comments_controller'
 
 
 // Drodmin routes
@@ -27,6 +28,7 @@ router.group(() => {
   router.resource('attachments', DrodminAttachmentsController).only(['index', 'store', 'destroy'])
   router.get('/posts/props', [DrodminPostsController, 'props']).as('posts.props')
   router.resource('posts', DrodminPostsController).apiOnly()
+  router.resource('posts.comments', DrodminPostsCommentsController).only(['index', 'store', 'update', 'destroy'])
   router.resource('categories', DrodminCategoriesController).apiOnly()
 })
 .prefix('/drodmin/:siteId').as('drodmin')

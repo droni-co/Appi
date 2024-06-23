@@ -6,14 +6,18 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.bigInteger('post_id').notNullable()
+      table.bigInteger('post_id')
+        .notNullable()
+        .references('id')
+        .inTable('posts')
+        .onDelete('CASCADE')
       table
         .uuid('user_id')
         .notNullable()
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')
-      table.bigInteger('parent_id').nullable()
+      table.bigInteger('parent_id').defaultTo(0)
       table.text('content').notNullable()
       table.boolean('approved').defaultTo(false)
       table.timestamp('created_at')
