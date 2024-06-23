@@ -12,6 +12,7 @@ import { middleware } from '#start/kernel'
 import AuthController from '#controllers/auth_controller'
 import SitesController from '#controllers/sites_controller'
 import PostsController from '#controllers/posts_controller'
+import PostsCommentsController from '#controllers/posts_comments_controller'
 // Admin controllers
 import DrodminSitesController from '#controllers/drodmin/sites_controller'
 import DrodminAttachmentsController from '#controllers/drodmin/attachments_controller'
@@ -42,7 +43,11 @@ router.group(() => {
   router.get('/', [SitesController, 'show'])
   router.post('/login', [AuthController, 'login'])
   router.resource('posts', PostsController).only(['index', 'show'])
+  router.resource('posts.comments', PostsCommentsController).only(['index'])
   // User area
+  router.group(() => {
+    router.resource('posts.comments', PostsCommentsController).only(['store', 'destroy'])
+  }).use(middleware.auth())
   
 }).prefix('/:siteId').use(middleware.site())
 

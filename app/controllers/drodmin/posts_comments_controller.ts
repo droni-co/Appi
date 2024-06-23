@@ -17,7 +17,7 @@ export default class PostsCommentsController {
 
     const comments = await Comment.query()
       .where('post_id', post.id)
-      .where('parent_id', 0)
+      .andWhere('parent_id', 0)
       .orderBy('created_at', 'asc')
       .preload('user')
       .preload('children', (query) => {
