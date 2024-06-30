@@ -21,7 +21,7 @@ export default class Comment extends BaseModel {
   @column()
   declare content: string
 
-  @column()
+  @column({ serialize: Boolean })
   declare approved: boolean
 
   @column.dateTime({ autoCreate: true })

@@ -12,6 +12,7 @@ export default class CategoriesController {
 
     const categories = await Category.query()
       .where('site_id', siteId)
+      .andWhere('parent_id', 0)
       .andWhere(function (query) {
         if (lang !== 'all') {
           query.andWhere('lang', lang)

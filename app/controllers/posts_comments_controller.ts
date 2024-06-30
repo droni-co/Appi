@@ -54,7 +54,7 @@ export default class PostsCommentsController {
           query.where('siteId', params.siteId)
         }).first()
       
-      const comment = await Comment.create({...payload, postId: post.id, userId: user.id, approved: Boolean(approved)})
+      const comment = (await Comment.create({...payload, postId: post.id, userId: user.id, approved: Boolean(approved)}))
   
       return comment
     }
