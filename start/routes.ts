@@ -28,6 +28,7 @@ router.group(() => {
   router.get('/me', [AuthController, 'me']).as('me')
   router.resource('attachments', DrodminAttachmentsController).only(['index', 'store', 'destroy'])
   router.get('/posts/props', [DrodminPostsController, 'props']).as('posts.props')
+  router.get('/posts/comments', [DrodminPostsController, 'comments']).as('posts.comments')
   router.resource('posts', DrodminPostsController).apiOnly()
   router.resource('posts.comments', DrodminPostsCommentsController).only(['index', 'store', 'update', 'destroy'])
   router.resource('categories', DrodminCategoriesController).apiOnly()

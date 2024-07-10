@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 import Post from '#models/post'
 import Category from '#models/category'
+import Comment from '#models/comment'
 import { adminPostValidator } from '#validators/admin/post'
 
 export default class PostsController {
@@ -124,5 +125,19 @@ export default class PostsController {
       .andWhereIn('id', categoryIds)
       .andWhere('lang', post.lang)
     await post.related('categories').sync(categiesList.map(e => e.id))
+  }
+
+  /**
+   * Moderate All comments
+   */
+  async comments({ params }: HttpContext) {
+    const siteId = params.siteId
+    const comments = await Comment.query().whereHas('post', (query) => {
+      query.where('site_id', siteId)
+    }).preload('user').preload('children')
+    .orderBy('created_at', 'asc')
+    .paginate(50)
+
+    return comments
   }
 }
