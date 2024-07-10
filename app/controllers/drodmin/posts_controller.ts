@@ -131,15 +131,17 @@ export default class PostsController {
    * Moderate All comments
    */
   async comments({ params }: HttpContext) {
+    const { page=1, limit=20, approved=false } = params
     const siteId = params.siteId
     const comments = await Comment.query().whereHas('post', (query) => {
-      query.where('site_id', siteId).andWhere('approved', false)
+      query.where('site_id', siteId)
     })
+    .andWhere('approved', approved)
     .preload('post')
     .preload('user')
     .preload('children')
     .orderBy('created_at', 'asc')
-    .paginate(50)
+    .paginate(page, limit)
 
     return comments
   }
