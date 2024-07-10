@@ -133,8 +133,11 @@ export default class PostsController {
   async comments({ params }: HttpContext) {
     const siteId = params.siteId
     const comments = await Comment.query().whereHas('post', (query) => {
-      query.where('site_id', siteId)
-    }).preload('user').preload('children')
+      query.where('site_id', siteId).andWhere('approved', false)
+    })
+    .preload('post')
+    .preload('user')
+    .preload('children')
     .orderBy('created_at', 'asc')
     .paginate(50)
 
