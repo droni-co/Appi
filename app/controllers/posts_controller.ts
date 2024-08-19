@@ -6,11 +6,16 @@ export default class PostsController {
    * Display a list of resource
    */
   async index({ params, request }: HttpContext) {
-    const { page, limit, orderBy, sort, lang='en' } = request.qs()
+    const { page, limit, orderBy, sort, lang='en', category_id } = request.qs()
     const posts = await Post.query()
       .where('site_id', params.siteId)
       .andWhere('active', true)
       .andWhere('lang', lang)
+      .if(category_id, (query) => {
+        query.whereHas('categories', (builder) => {
+          builder.where('id', category_id)
+        })
+      })
       .orderBy(orderBy || 'created_at', sort || 'desc')
       .preload('user')
       .paginate(page, limit)
